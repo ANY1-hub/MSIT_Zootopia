@@ -1,13 +1,24 @@
 import json
 
+
+searched_fields  = ['name', 'diet', 'type', 'location']
+# ==============================================================================
+# reading data
+# ==============================================================================
 def load_data(file_path):
-    """ Load data from json file"""
+    """ Load data from file"""
     with open(file_path, 'r') as handle:
-        return json.load(handle)
+        if file_path.endswith('json'):
+            return json.load(handle)
+        elif file_path.endswith('html') or file_path.endswith('htm'):
+            return handle.read()
 
 animals_data = load_data('animals_data.json')
-searched_fields  = ['name', 'diet', 'type', 'location']
+html_data = load_data('animals_template.html')
 
+# ==============================================================================
+# printing data
+# ==============================================================================
 # def print_animals(animals):
 #     values_to_print = {}
 #     for animal in animals:
@@ -36,9 +47,9 @@ searched_fields  = ['name', 'diet', 'type', 'location']
 # print_animals_2(animals_data)
 #     # values_to_print = list(map(lambda x: {key: x.get("key") for key in lookup_keys}))
 
-def transform_animal(animal ):
+def transform_animal_data(animal ):
     """
-    Extraxts the required data form the animal_record
+    Extracts the required data form the animal_record
     :param animal: complex dictionary of all data on an animal
     :return: extracted, flattened animal data dict
     """
@@ -51,21 +62,31 @@ def transform_animal(animal ):
     }
 
 
-values_to_print = map(transform_animal, animals_data)
+values_to_print = map(transform_animal_data, animals_data)
 
-def print_animal_values(values_to_print):
+def stringify_animal_values(values_to_print):
     """
     prints all values from received list, if not None
     :param values_to_print: list of dictionaries with animal data
     :return: None
     """
+    output = ""
     for animal in values_to_print:
-        print()
+        # print()
         if animal:
             for label, value in animal.items():
                 if value:
-                    print(f'{label.capitalize()}: {value}')
+                    # print(f'{label.capitalize()}: {value}')
+                    output += f'{label.capitalize()}: {value}/n'
+    return output
 
-print_animal_values(values_to_print)
+print(stringify_animal_values(values_to_print))
 
+# ==================================================================================================
+# TODO:
+def replace_html_data(template, new_text):
+    print(new_text)
+    new_html = template.replace('__REPLACE_ANIMALS_INFO__', str(new_text))
+    return new_html
 
+print(replace_html_data(html_data,stringify_animal_values(values_to_print)))
