@@ -45,8 +45,8 @@ def transform_animal(animal ):
     characteristics = animal.get('characteristics')
     return {
         'Name': animal.get('name'),
-        'Diet': characteristics.get('diet'),
-        'Type': characteristics.get('type'),
+        'Diet': characteristics.get('diet') if  animal.get('characteristics') else None,
+        'Type': characteristics.get('type') if  animal.get('characteristics') else None,
         'Locations': animal.get('locations')[0] if animal.get('locations') else None
     }
 
