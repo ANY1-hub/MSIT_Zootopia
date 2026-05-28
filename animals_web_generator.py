@@ -17,6 +17,15 @@ animals_data = load_data('animals_data.json')
 html_data = load_data('animals_template.html')
 
 # ==============================================================================
+# saving data
+# ==============================================================================
+def save_data(file_path,text):
+    """ Save data to html file """
+    with open(file_path, 'w') as target:
+        if file_path.endswith('html') or file_path.endswith('htm'):
+            target.write(text)
+
+# ==============================================================================
 # printing data
 # ==============================================================================
 # def print_animals(animals):
@@ -72,21 +81,25 @@ def stringify_animal_values(values_to_print):
     """
     output = ""
     for animal in values_to_print:
-        # print()
+        output += '\n'
         if animal:
             for label, value in animal.items():
                 if value:
-                    # print(f'{label.capitalize()}: {value}')
-                    output += f'{label.capitalize()}: {value}/n'
+                    output += f'{label.capitalize()}: {value}\n'
     return output
 
-print(stringify_animal_values(values_to_print))
 
 # ==================================================================================================
-# TODO:
-def replace_html_data(template, new_text):
-    print(new_text)
+
+def replace_html_data(template:str, new_text):
     new_html = template.replace('__REPLACE_ANIMALS_INFO__', str(new_text))
     return new_html
 
-print(replace_html_data(html_data,stringify_animal_values(values_to_print)))
+# print(replace_html_data(html_data,stringify_animal_values(values_to_print)))
+
+def main():
+    new_html = replace_html_data(html_data,stringify_animal_values(values_to_print))
+    save_data('animals.html', new_html)
+
+if __name__ == '__main__':
+    main()
