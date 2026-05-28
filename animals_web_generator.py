@@ -73,7 +73,7 @@ def transform_animal_data(animal ):
 
 values_to_print = map(transform_animal_data, animals_data)
 
-def stringify_animal_values(values_to_print):
+def serialize_animal(values_to_print):
     """
     prints all values from received list, if not None
     :param values_to_print: list of dictionaries with animal data
@@ -100,10 +100,10 @@ def replace_html_data(template:str, new_text):
     new_html = template.replace('__REPLACE_ANIMALS_INFO__', str(new_text))
     return new_html
 
-# print(replace_html_data(html_data,stringify_animal_values(values_to_print)))
+# print(replace_html_data(html_data,serialize_animal(values_to_print)))
 
 def main():
-    new_html = replace_html_data(html_data,stringify_animal_values(values_to_print))
+    new_html = replace_html_data(html_data,serialize_animal(values_to_print))
     save_data('animals.html', new_html)
 
 if __name__ == '__main__':
