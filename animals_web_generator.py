@@ -81,12 +81,16 @@ def stringify_animal_values(values_to_print):
     """
     output = ""
     for animal in values_to_print:
-        output += '\n<li class="cards__item">'
+        output += '\n\t<li class="cards__item">\n'
         if animal:
             for label, value in animal.items():
-                if value:
-                    output += f'{label.capitalize()}: {value}<br>\n'
-        output += '</li>'
+                if label == "Name":
+                    output += f'\t\t<div class="card__title">{value}</div>\n'
+                    output += f'\t\t\t<p class="card__text">\n'
+                if label != "Name":
+                    output += f'\t\t\t\t<strong>{label.capitalize()}:</strong> {value}<br>\n'
+
+        output += '\t\t\t</p>\n\t\t</li>'
     return output
 
 
