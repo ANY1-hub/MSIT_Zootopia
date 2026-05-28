@@ -1,7 +1,6 @@
 import json
 
 
-searched_fields  = ['name', 'diet', 'type', 'location']
 # ==============================================================================
 # reading data
 # ==============================================================================
@@ -13,8 +12,6 @@ def load_data(file_path):
         elif file_path.endswith('html') or file_path.endswith('htm'):
             return handle.read()
 
-animals_data = load_data('animals_data.json')
-html_data = load_data('animals_template.html')
 
 # ==============================================================================
 # saving data
@@ -56,22 +53,36 @@ def save_data(file_path,text):
 # print_animals_2(animals_data)
 #     # values_to_print = list(map(lambda x: {key: x.get("key") for key in lookup_keys}))
 
-def transform_animal_data(animal ):
+def transform_animal_data(animal):
     """
     Extracts the required data form the animal_record
     :param animal: complex dictionary of all data on an animal
     :return: extracted, flattened animal data dict
     """
-    characteristics = animal.get('characteristics')
-    return {
-        'Name': animal.get('name'),
-        'Diet': characteristics.get('diet') if characteristics else None,
-        'Type': characteristics.get('type') if characteristics else None,
-        'Locations': animal.get('locations')[0] if animal.get('locations') else None
+    FIELD_MAP = {
+        'name': 'root',
+        'diet': 'characteristics',
+        'type': 'characteristics',
+        'family': 'taxonomy',
+        'genus': 'taxonomy',
+        'locations': 'locations',
     }
+    characteristics = animal.get('characteristics')
+    taxonomy = animal.get('taxonomy')
+    locations = animal.get('locations')
+    transformed_animal_data = {}
 
+    for field, parent in FIELD_MAP.items():
+        if parent == 'root':
+            transformed_animal_data[field.capitalize()] = animal.get(field)
+        elif parent == 'characteristics':
+            transformed_animal_data[field.capitalize()] = characteristics.get(field) if characteristics else None
+        elif parent == 'taxonomy':
+            transformed_animal_data[field.capitalize()] = taxonomy.get(field) if taxonomy else None
+        elif parent == 'locations':
+            transformed_animal_data[field.capitalize()] = ", ".join([place for place in animal.get(parent)]) if locations else None
+    return transformed_animal_data
 
-values_to_print = map(transform_animal_data, animals_data)
 
 def serialize_animal(values_to_print):
     """
@@ -100,9 +111,12 @@ def replace_html_data(template:str, new_text):
     new_html = template.replace('__REPLACE_ANIMALS_INFO__', str(new_text))
     return new_html
 
-# print(replace_html_data(html_data,serialize_animal(values_to_print)))
 
 def main():
+    animals_data = load_data('animals_data.json')
+    html_data = load_data('animals_template.html')
+    values_to_print = map(transform_animal_data, animals_data)
+
     new_html = replace_html_data(html_data,serialize_animal(values_to_print))
     save_data('animals.html', new_html)
 
